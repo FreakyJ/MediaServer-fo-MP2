@@ -1,0 +1,48 @@
+﻿<<Grammar Name="UPnPContentDirectorySearch" 
+          encoding_class="utf8"
+          reference="http://www.upnp.org/"
+          comment="UPnP AV ContentDirectory v1 Search Grammer"
+		      namespace="MediaPortal.Extensions.MediaServer" 
+		      access="public"
+>>
+
+^^searchCrit: boolean_expression / '*';
+
+parenthesized_expression: '(' wChar boolean_expression ')' wChar;
+primary_expression:		literal / property / parenthesized_expression;
+^existance_expression:    primary_expression (^('exists') wChar primary_expression )*;
+^string_expression:    existance_expression (^('contains'/'doesNotContain'/'derivedfrom') wChar existance_expression )*;
+^relational_expression: 	string_expression (^('<='/'>='/'<'/'>') wChar string_expression )*;
+^equality_expression: 		relational_expression (^('='/'!=') wChar relational_expression)*;
+^conditional_and_expression: 	equality_expression ('and' wChar equality_expression)*;
+^conditional_or_expression: 	conditional_and_expression ('or' wChar conditional_and_expression)*;
+^conditional_expression: conditional_or_expression;
+^^boolean_expression: 		conditional_expression;
+
+literal: (boolean_literal / string_literal) wChar;
+^string_literal: '"' string_literal_characters? '"';
+^boolean_literal: 'true' B / 'false' B;
+string_literal_characters: string_literal_character+;
+string_literal_character: [^"\\#x000D#x000A#x0085#x2028#x2029]; //Any character except " (U+0022), " (U+005C), and new-line-character
+
+^^property: property_element property_attribute? wChar / property_attribute wChar;
+property_element: regular_property_character+ (':' regular_property_character*);
+property_attribute: '@' regular_property_character+; 
+regular_property_character: [A-Za-z];
+
+wChar: ( whitespace / new_line )*;
+B: ![a-zA-Z_0-9];
+
+
+whitespace: #x0009/#x000B/#x000C/#x0020;   
+// Horizontal tab character (U+0009)
+// Vertical tab character (U+000B)
+// Form feed character (U+000C)
+// Space character (U+0020) 
+
+new_line: '\r\n' / [\r\n];
+//	Carriage return character (U+000D) followed by line feed character (U+000A) /
+//	Carriage return character (U+000D) /
+//	Line feed character (U+000A) /
+
+<</Grammar>>

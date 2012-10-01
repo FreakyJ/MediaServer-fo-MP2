@@ -1,0 +1,1 @@
+M:\Programmieren\C#\MediaServer\obj\Debug\ResolveAssemblyReference.cache
